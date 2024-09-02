@@ -9,33 +9,32 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.web.authentication.WebAuthenticationDetailsSource;
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
 
+import com.spring.busbooking.repository.UserRepository;
 import com.spring.busbooking.service.JwtService;
-import com.spring.busbooking.service.UserService;
 
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import lombok.RequiredArgsConstructor;
 
 @Component
 public class JwtAuthFilter extends OncePerRequestFilter{
 
 	@Autowired
 	private JwtService jwtService;
+
+	private UserDetailsService userDetailsService;
 	
-	@Autowired
-	private UserService userService;
-	
-	public JwtAuthFilter(JwtService jwtService, UserService userService) {
-		super();
+	public JwtAuthFilter(JwtService jwtService,UserDetailsService userDetailsService) {
 		this.jwtService = jwtService;
-		this.userService = userService;
+		this.userDetailsService=userDetailsService;
 	}
-	
 	
 	@Override
 	protected void doFilterInternal(@NonNull HttpServletRequest request,
@@ -47,8 +46,8 @@ public class JwtAuthFilter extends OncePerRequestFilter{
 		final String email;
 		final String jwtToken;
 		
-		if (io.micrometer.common.util.StringUtils.isEmpty(authHeader)
-				|| !StringUtils.startsWith(authHeader, "Bearer ")) {
+		if (authHeader==null
+				|| !authHeader.startsWith("Bearer ")) {
 			filterChain.doFilter(request, response);
 			return;
 		}
@@ -56,23 +55,25 @@ public class JwtAuthFilter extends OncePerRequestFilter{
 		jwtToken = authHeader.substring(7);
 		email = jwtService.extractUsername(jwtToken);
 
-		if (io.micrometer.common.util.StringUtils.isEmpty(email) && SecurityContextHolder.getContext().getAuthentication()==null ) {
-            UserDetails userDetails = userService.userDetailsService().loadUserByUsername(email);
-            
-            if(jwtService.isTokenValid(jwtToken,userDetails)) {
-            	SecurityContext securityContext =  SecurityContextHolder.createEmptyContext();
+		if (email!=null && SecurityContextHolder.getContext().getAuthentication()==null ) {
+            UserDetails userDetails = userDetailsService.loadUserByUsername(email);
             	
             	UsernamePasswordAuthenticationToken token = new UsernamePasswordAuthenticationToken(
             			userDetails,null, userDetails.getAuthorities());
             	
-            	token.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
+            	token.setDetails(
+                        new WebAuthenticationDetailsSource().buildDetails(request)
+                );
             	
-            	securityContext.setAuthentication(token);
-            	SecurityContextHolder.setContext(securityContext);
+            	SecurityContextHolder.getContext().setAuthentication(token);
 				
             }
-		}
 
 		filterChain.doFilter(request, response);
    }
+	
+	@Override
+	protected boolean shouldNotFilter(HttpServletRequest request) throws ServletException {
+		return request.getServletPath().contains("/bus");
+	}
 }

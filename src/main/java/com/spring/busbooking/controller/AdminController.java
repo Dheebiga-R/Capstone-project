@@ -4,14 +4,15 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
-@Controller
+@RestController
 @RequestMapping("/admin")
-
+@PreAuthorize("hasRole('ADMIN')")
 public class AdminController {
 
 	@GetMapping
 	public String getmethod() {
-		return "admin";
+		return "ADMIN ROLE :: GET Method";
 	}
 }

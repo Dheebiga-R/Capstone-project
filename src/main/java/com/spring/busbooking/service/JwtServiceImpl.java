@@ -1,9 +1,14 @@
 package com.spring.busbooking.service;
 
 import java.security.Key;
+import java.util.Collection;
 import java.util.Date;
+import java.util.HashSet;
+import java.util.Set;
+import java.util.StringJoiner;
 import java.util.function.Function;
 
+import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 
@@ -21,11 +26,21 @@ public class JwtServiceImpl implements JwtService{
 
 	public String generateToken(UserDetails user) {
 		return Jwts.builder().setSubject(user.getUsername())
+				.claim("authorities", populateAuthorities(user.getAuthorities()))
 				.setIssuedAt(new Date(System.currentTimeMillis()))
 				.setExpiration(new Date(System.currentTimeMillis() + 1000 * 60 * 24))
-				.signWith(getSigningKey(), SignatureAlgorithm.HS256).compact();
+				.signWith(getSigningKey(), SignatureAlgorithm.HS256)
+				.compact();
 	}
 	
+	private String populateAuthorities(Collection<? extends GrantedAuthority> authorities) {
+		Set<String> authoritySet = new HashSet<String>();
+		for(GrantedAuthority authority:authorities) {
+			authoritySet.add(authority.getAuthority());
+		}
+		return String.join(",",authoritySet );
+	}
+
 	private Key getSigningKey() {
 		byte[] keyBytes = Decoders.BASE64.decode(SECRET);
 		return Keys.hmacShaKeyFor(keyBytes);

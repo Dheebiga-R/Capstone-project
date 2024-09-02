@@ -1,7 +1,9 @@
 package com.spring.busbooking.service;
 
-import org.aspectj.weaver.ast.Var;
+import java.util.Collection;
+
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -12,6 +14,7 @@ import com.spring.busbooking.dto.AuthenticationResponse;
 import com.spring.busbooking.dto.Register;
 import com.spring.busbooking.model.User;
 import com.spring.busbooking.repository.UserRepository;
+
 import lombok.RequiredArgsConstructor;
 
 
@@ -19,20 +22,23 @@ import lombok.RequiredArgsConstructor;
 public class AuthServiceImpl implements AuthService {
 	@Autowired
 	private UserRepository userRepository;
- 
-	@Autowired
+
 	private PasswordEncoder passwordEncoder;
-	
-    @Autowired
+
 	private AuthenticationManager authenticationManager;
-    
-    public AuthServiceImpl(UserRepository userRepository, PasswordEncoder passwordEncoder,AuthenticationManager authenticationManager) {
+	
+	@Autowired
+    private JwtService jwtService;
+	
+	public AuthServiceImpl(UserRepository userRepository,JwtService jwtService,AuthenticationManager authenticationManager,
+			PasswordEncoder passwordEncoder) {
 		this.userRepository = userRepository;
-		this.passwordEncoder = passwordEncoder;
+		this.jwtService = jwtService;
 		this.authenticationManager=authenticationManager;
+		this.passwordEncoder=passwordEncoder;
 	}
 
-	public User registerData(Register register) {
+	public AuthenticationResponse registerData(Register register) {
 		User user =  User.builder()
 				    .firstName(register.getFirstName())
 				    .lastName(register.getLastName())
@@ -40,10 +46,12 @@ public class AuthServiceImpl implements AuthService {
 				    .password(passwordEncoder.encode(register.getPassword()))
 				    .role(register.getRole())
 				    .build();
-		return userRepository.save(user);
+		userRepository.save(user);
+		String jwtToken = jwtService.generateToken(user);
+		return AuthenticationResponse.builder().accessToken(jwtToken).build();
 	}
 
-	public User authenticateRequest(AuthenticationRequest request) {
+	public AuthenticationResponse authenticateRequest(AuthenticationRequest request) {
 		
 		authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(
@@ -51,8 +59,10 @@ public class AuthServiceImpl implements AuthService {
                 		request.getPassword()
                 )
         );
-		User user = userRepository.findByEmail(request.getEmail()).orElseThrow(() -> new IllegalArgumentException("User not found")); 
-		return user;
+		User user = userRepository.findByEmail(request.getEmail()).orElseThrow();
+		String jwtToken = jwtService.generateToken(user);
+		return AuthenticationResponse.builder().accessToken(jwtToken).build();
+		
     }
 		
 }

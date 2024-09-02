@@ -1,7 +1,5 @@
 package com.spring.busbooking.config;
 
-
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -14,61 +12,42 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.config.http.SessionCreationPolicy;
+import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
-import com.spring.busbooking.model.Role;
-import com.spring.busbooking.service.UserService;
+import com.spring.busbooking.repository.UserRepository;
+
+import lombok.RequiredArgsConstructor;
 
 @Configuration
 @EnableWebSecurity
 @EnableMethodSecurity
 public class SecurityConfig {
 	
-	@Autowired
-	private UserService userService;
-	
-	@Autowired
     private JwtAuthFilter jwtAuthFilter;
-	
-	public SecurityConfig(UserService userService) {
-		this.userService=userService;
+    
+    private AuthenticationProvider authenticationProvider;
+    
+    public SecurityConfig(AuthenticationProvider authenticationProvider,JwtAuthFilter jwtAuthFilter) {
+		this.authenticationProvider=authenticationProvider;
+    	this.jwtAuthFilter=jwtAuthFilter;
 	}
 
     @Bean
-    protected SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
+    public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
     	http.csrf(AbstractHttpConfigurer::disable)
-    	.authorizeHttpRequests(request -> request.requestMatchers("/registration").permitAll()
-    			.requestMatchers("/login").permitAll()
-    			.requestMatchers("/admin").hasAnyAuthority(Role.ADMIN.name())
-    			.requestMatchers("/dashboard").hasAnyAuthority(Role.USER.name())
+    	.authorizeHttpRequests(request -> request.requestMatchers("/bus/register").permitAll()
+    			.requestMatchers("/bus/login").permitAll()
     			.anyRequest()
     			.authenticated())
     			.sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
-    			.authenticationProvider(authenticationProvider())
+    			.authenticationProvider(authenticationProvider)
     		    .addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class);
 
          return http.build();
     }
-
-    @Bean
-	protected AuthenticationProvider authenticationProvider() {
-		DaoAuthenticationProvider authProvider = new DaoAuthenticationProvider();
-		authProvider.setUserDetailsService(userService.userDetailsService());
-		authProvider.setPasswordEncoder(passwordEncoder());
-		return authProvider;
-	}
-	
-    @Bean
-	protected PasswordEncoder passwordEncoder() {
-		return new BCryptPasswordEncoder();
-	}
-    
-    @Bean
-    protected AuthenticationManager authenticationManager(AuthenticationConfiguration config) throws Exception {
-    	return config.getAuthenticationManager();
-    }
-
 }

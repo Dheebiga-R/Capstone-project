@@ -3,15 +3,17 @@ package com.spring.busbooking.controller;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
-@Controller
+@RestController
 @RequestMapping("/dashboard")
-@PreAuthorize("hasrole('USER')")
+@PreAuthorize("hasRole('USER')")
 public class PassengerController {
 
 	@GetMapping
 	public String getResult() {
-		return "dashboard";
+		return "USER ROLE :: GET Method";
 	}
 }
