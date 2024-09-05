@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+<!-- Required meta tags -->
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link
+	href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css"
+	rel="stylesheet"
+	integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC"
+	crossorigin="anonymous">
+<title>Update Route</title>
+
+<style>
+
+.bus{
+      max-width:10vw;
+      margin-right:10px;
+    }
+    .nav-link{
+      color:white;
+    }
+    .nav-link:hover{
+      font-weight:500;
+    }
+    #header{
+      background-image:linear-gradient(hsl(39, 100%, 60%),orange);
+    }
+    .container h2{
+    color:blueviolet;
+    text-align:center;
+    }
+    .fluid-container h3 {
+	margin:auto;
+    }
+    .container{
+    background-color:whitesmoke;
+	border:2px solid black;
+	border-radius: 20px;
+    }
+</style>
+</head>
+
+<body>
+
+    <div
+		class="fluid-container d-flex justify-content-between align-items-center p-3"
+		id="header">
+		<h3>Indian Express</h3>
+		<ul class="nav nav-pills">
+			<li class="nav-item"><a class="nav-link text-light" th:href=@{/admin}
+				alt="login">Home</a></li>
+		</ul>
+	</div>
+	
+	<div class="container col-md-6 col-md-offset-3 mt-3 p-3">
+    <form action="#" th:action="@{/admin/update/{id}(id=${bus.id})}" th:object="${bus}" method="post">
+    <div class="text-center">
+    <h4>Update Bus</h4>
+    </div>
+    <div class="d-flex flex-row justify-content-evenly">
+      <div>
+      <div>
+        <label for="busName" class="form-label">Bus Name:</label>
+        <input th:field="*{busName}" type="text" class="form-control" id="busName" placeholder="Enter bus Name" name="busName">
+        <small th:if="${#fields.hasErrors('busName')}" th:errors="*{busName}" class="text-danger"></small>
+      </div>
+      
+      <div>
+        <label for="busClass" class="form-label">Bus Class:</label>
+        <input th:field="*{busClass}" type="text" class="form-control" id="busClass" placeholder="Enter bus class" name="busClass">
+        <small th:if="${#fields.hasErrors('busClass')}" th:errors="*{busClass}" class="text-danger"></small>
+      </div>
+      
+      <div>
+        <label for="seatCount" class="form-label">Seat Count:</label>
+        <input th:field="*{seatCount}" type="number" class="form-control" id="seatCount" placeholder="Enter number of seats" name="seatCount">
+        <small th:if="${#fields.hasErrors('seatCount')}" th:errors="*{seatCount}" class="text-danger"></small>
+      </div>
+      
+      <div>
+        <label for="availableSeat" class="form-label">Available Seat:</label>
+        <input th:field="*{availableSeat}" type="number" class="form-control" id="availableSeat" placeholder="Enter available seats" name="availableSeat">
+        <small th:if="${#fields.hasErrors('availableSeat')}" th:errors="*{availableSeat}" class="text-danger"></small>
+      </div>
+      
+      <div>
+        <label for="terminalFrom" class="form-label">Terminal From:</label>
+        <input th:field="*{terminalFrom}" type="text" class="form-control" id="terminalFrom" placeholder="Enter from location" name="terminalFrom">
+        <small th:if="${#fields.hasErrors('terminalFrom')}" th:errors="*{terminalFrom}" class="text-danger"></small>
+      </div>
+      
+      <div>
+        <label for="terminalTo" class="form-label">Terminal To:</label>
+        <input th:field="*{terminalTo}" type="text" class="form-control" id="terminalTo" placeholder="Enter to location" name="terminalTo">
+        <small th:if="${#fields.hasErrors('terminalTo')}" th:errors="*{terminalTo}" class="text-danger"></small>
+      </div>
+      </div>
+      
+      <div>
+      <div>
+        <label for="busFare" class="form-label">Bus Fare</label>
+        <input th:field="*{busFare}" type="number" class="form-control" id="busFare" placeholder="Enter fare" name="busFare">
+        <small th:if="${#fields.hasErrors('busFare')}" th:errors="*{busFare}" class="text-danger"></small>
+      </div>
+      
+      <div>
+        <label for="arrivalTime" class="form-label">Arrival Time:</label>
+        <input th:field="*{arrivalTime}" type="text" class="form-control" id="arrivalTime" placeholder="Enter arrival time" name="arrivalTime">
+        <small th:if="${#fields.hasErrors('arrivalTime')}" th:errors="*{arrivalTime}" class="text-danger"></small>
+      </div>
+      
+      <div>
+        <label for="departureTime" class="form-label">Departure Time:</label>
+        <input th:field="*{departureTime}" type="text" class="form-control" id="emailId" placeholder="Enter departure time" name="departureTime">
+        <small th:if="${#fields.hasErrors('departureTime')}" th:errors="*{departureTime}" class="text-danger"></small>
+      </div>
+      
+      <div>
+        <label for="date" class="form-label">Date:</label>
+        <input th:field="*{date}" type="date" class="form-control" id="date" placeholder="Enter date" name="date">
+        <small th:if="${#fields.hasErrors('date')}" th:errors="*{date}" class="text-danger"></small>
+      </div>
+      <br>
+      <button type="submit" class="btn btn-success">Update</button>
+      </div>
+      </div>
+    </form>
+  </div>
+
+<script
+		src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"
+		integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM"
+		crossorigin="anonymous"></script>
+</body>
+</html>

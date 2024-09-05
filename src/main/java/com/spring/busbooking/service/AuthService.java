@@ -9,7 +9,10 @@ import com.spring.busbooking.model.User;
 
 public interface AuthService {
 
-	public AuthenticationResponse registerData(Register register);
+	public void registerData(Register register);
+
+	public User findById(Integer id);
 	
-	public AuthenticationResponse authenticateRequest(AuthenticationRequest request);
+	public void updateUser(User user);
+
 }

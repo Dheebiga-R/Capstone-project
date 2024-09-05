@@ -29,7 +29,6 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 
 @Controller
-@RequestMapping("/bus")
 public class AuthRegistrationController {
 	@Autowired
 	private AuthService authService;
@@ -42,18 +41,14 @@ public class AuthRegistrationController {
 		this.userRepository = userRepository;
 	}
 	
-	@PostMapping("/register")
-	public ResponseEntity<AuthenticationResponse> registerEntity(@RequestBody Register register){
-		return ResponseEntity.ok(authService.registerData(register));
+	//for user registration and login
+	@GetMapping("/bus")
+	public String homepage() {
+		return "home";
 	}
 	
-	@PostMapping("/login")
-	public ResponseEntity<AuthenticationResponse> loginEntity(@RequestBody AuthenticationRequest request){
-		return ResponseEntity.ok(authService.authenticateRequest(request));
-	}
-	
-	/*@GetMapping("/register")
-	public String registerUser(Register register,Model model) {
+	@GetMapping("/register")
+	public String registerUser(Model model) {
 		model.addAttribute("register", new Register());
 		return "register";
 	}
@@ -64,24 +59,23 @@ public class AuthRegistrationController {
 			return "register";
 		}
 		authService.registerData(register);
-		return "redirect:/bus/login";
+		return "redirect:/login?success";
 	}
 	
 	@GetMapping("/login")
-	public String loginUser(AuthenticationRequest authRequest,Model model) {
+	public String loginUser(Model model) {
 		model.addAttribute("authRequest", new AuthenticationRequest());
 		return "login";
 	}
+
+	
+	/*@PostMapping("/register")
+	public ResponseEntity<AuthenticationResponse> registerEntity(@RequestBody Register register){
+		return ResponseEntity.ok(authService.registerData(register));
+	}
 	
 	@PostMapping("/login")
-	public String processUser(@Valid AuthenticationRequest authRequest,BindingResult result
-			,HttpServletRequest request, HttpServletResponse response) {
-		if(result.hasErrors()) {
-			return "login";
-		}
-		AuthenticationResponse jwtToken = authService.authenticateRequest(authRequest);
-		response.setHeader("Authorization", "Bearer " + jwtToken.getAccessToken());
-        return "redirect:/dashboard";
+	public ResponseEntity<AuthenticationResponse> loginEntity(@RequestBody AuthenticationRequest request){
+		return ResponseEntity.ok(authService.authenticateRequest(request));
 	}*/
-
 }

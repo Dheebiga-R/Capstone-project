@@ -1,6 +1,8 @@
 package com.spring.busbooking.service;
 
+import java.util.ArrayList;
 import java.util.Collection;
+import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -12,9 +14,11 @@ import org.springframework.stereotype.Service;
 import com.spring.busbooking.dto.AuthenticationRequest;
 import com.spring.busbooking.dto.AuthenticationResponse;
 import com.spring.busbooking.dto.Register;
+import com.spring.busbooking.model.Role;
 import com.spring.busbooking.model.User;
 import com.spring.busbooking.repository.UserRepository;
 
+import jakarta.annotation.PostConstruct;
 import lombok.RequiredArgsConstructor;
 
 
@@ -37,33 +41,49 @@ public class AuthServiceImpl implements AuthService {
 		this.authenticationManager=authenticationManager;
 		this.passwordEncoder=passwordEncoder;
 	}
-
-	public AuthenticationResponse registerData(Register register) {
+	
+//register the user information and encode the password
+	public void registerData(Register register) {
 		User user =  User.builder()
 				    .firstName(register.getFirstName())
 				    .lastName(register.getLastName())
 				    .email(register.getEmail())
 				    .password(passwordEncoder.encode(register.getPassword()))
-				    .role(register.getRole())
+				    .role(Role.USER)
 				    .build();
 		userRepository.save(user);
-		String jwtToken = jwtService.generateToken(user);
-		return AuthenticationResponse.builder().accessToken(jwtToken).build();
 	}
 
-	public AuthenticationResponse authenticateRequest(AuthenticationRequest request) {
-		
-		authenticationManager.authenticate(
-                new UsernamePasswordAuthenticationToken(
-                		request.getEmail(),
-                		request.getPassword()
-                )
-        );
-		User user = userRepository.findByEmail(request.getEmail()).orElseThrow();
-		String jwtToken = jwtService.generateToken(user);
-		return AuthenticationResponse.builder().accessToken(jwtToken).build();
-		
-    }
+
+	@Override
+	public User findById(Integer id) {
+		return userRepository.findById(id).get();
+	}
+
+
+	@Override
+	public void updateUser(User user) {
+		userRepository.save(user);
+	}
+
+	
+	
+	/*
+	private static List<User> list = new ArrayList<>();
+	
+	static {
+		list.add(new User(1,"admin","admin","ROLE_ADMIN",true));
+		list.add(new User(2,"swapnil","1234","ROLE_NORMAL",true));
+	}
+	
+	public User getByUsername(String userName)
+	{
+		User user = null;
+	
+		user = list.stream().filter(e ->e.getUsername().equals(userName)).findFirst().get();
+	// user = 	new User(1,"admin","admin","ROLE_ADMIN",true);
+		return user;
+	}*/
 		
 }
 

@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+<!-- Required meta tags -->
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link
+	href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css"
+	rel="stylesheet"
+	integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC"
+	crossorigin="anonymous">
+<title>Ticket Booking</title>
+
+<style>
+
+   .bus{
+      max-width:10vw;
+      margin-right:10px;
+    }
+    .nav-link{
+      color:white;
+    }
+    .nav-link:hover{
+      font-weight:500;
+    }
+    #header{
+      background-image:linear-gradient(hsl(39, 100%, 60%),orange);
+    }
+    .container h2{
+    color:blueviolet;
+    text-align:center;
+    }
+    .fluid-container h3 {
+	margin:auto;
+    }
+    .container{
+    background-color:whitesmoke;
+	border:2px solid black;
+	border-radius: 20px;
+    }
+</style>
+</head>
+
+<body>
+
+    <div
+		class="fluid-container d-flex justify-content-between align-items-center p-3"
+		id="header">
+		<h3>Indian Express</h3>
+		<ul class="nav nav-pills">
+			<li class="nav-item"><a class="nav-link text-light" th:href=@{/booking}
+				alt="login">Home</a></li>
+		</ul>
+	</div>
+
+	
+	<div class="container col-md-6 col-md-offset-3 mt-3 p-3">
+    <form th:action="@{/booking/processBook}" th:object="${book}" method="post">
+    <div class="text-center">
+    <h4>Book Bus</h4>
+    </div>
+    <div class="d-flex flex-row justify-content-evenly">
+      <div>
+      <div>
+        <label for="seatCount" class="form-label">Number of seat:</label>
+        <input th:field="*{seatCount}" type="text" class="form-control" id="seatCount" placeholder="Enter number of seat" name="seatCount">
+        <small th:if="${#fields.hasErrors('seatCount')}" th:errors="*{seatCount}" class="text-danger"></small>
+      </div>
+      
+      <div>
+        <label for="busId" class="form-label">Bus Id:</label>
+        <input th:field="*{busId}" type="text" class="form-control" id="busId" placeholder="Enter bus id" name="busId">
+        <small th:if="${#fields.hasErrors('busId')}" th:errors="*{busId}" class="text-danger"></small>
+      </div>
+      
+      <div>
+        <label for="passengerId" class="form-label">Passenger Id:</label>
+        <input th:field="*{passengerId}" type="number" class="form-control" id="passengerId" placeholder="Enter passenger id" name="passengerId">
+        <small th:if="${#fields.hasErrors('passengerId')}" th:errors="*{passengerId}" class="text-danger"></small>
+      </div>
+      
+      <br>
+      <button type="submit" class="btn btn-success">Book</button>
+      </div>
+      </div>
+    </form>
+  </div>
+
+<script
+		src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"
+		integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM"
+		crossorigin="anonymous"></script>
+</body>
+</html>

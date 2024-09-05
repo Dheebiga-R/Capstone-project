@@ -13,6 +13,8 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 public class Register {
 
+	
+	//register dto
 	private String firstName;
 	private String lastName;
 	private String email;

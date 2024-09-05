@@ -13,6 +13,11 @@ import com.spring.busbooking.repository.UserRepository;
 @SpringBootApplication
 public class BusbookingApplication implements CommandLineRunner{
 
+	public static void main(String[] args) {
+		SpringApplication.run(BusbookingApplication.class, args);
+	}
+	
+	/*Implementing a default admin user, only admin know the password and email to get the admin page*/
 	@Autowired
 	private UserRepository userRepository;
 	
@@ -22,9 +27,6 @@ public class BusbookingApplication implements CommandLineRunner{
 		this.userRepository = userRepository;
 	}
 
-	public static void main(String[] args) {
-		SpringApplication.run(BusbookingApplication.class, args);
-	}
 
 	@Override
 	public void run(String... args) throws Exception {
