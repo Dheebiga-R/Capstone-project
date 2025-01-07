@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+<!-- Required meta tags -->
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link
+	href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css"
+	rel="stylesheet"
+	integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC"
+	crossorigin="anonymous">
+<title>Ticket</title>
+
+<style>
+
+   .bus{
+      max-width:10vw;
+      margin-right:10px;
+    }
+    .nav-link{
+      color:white;
+    }
+    .nav-link:hover{
+      font-weight:500;
+    }
+    #header{
+      background-image:linear-gradient(hsl(39, 100%, 60%),orange);
+    }
+    .container h2{
+    color:blueviolet;
+    text-align:center;
+    }
+    .fluid-container h3 {
+	margin:auto;
+    }
+    .container{
+    background-color:whitesmoke;
+	border:2px solid black;
+	border-radius: 20px;
+    } 
+    .container h3{
+    color:blueviolet;
+    }
+</style>
+</head>
+
+<body>
+
+    <div
+		class="fluid-container d-flex justify-content-between align-items-center p-3"
+		id="header">
+		<h3>Indian Express</h3>
+		<ul class="nav nav-pills">
+			<li class="nav-item"><a class="nav-link text-light" th:href=@{/booking/history}
+				alt="homepage">History & Ticket</a></li>
+		</ul>
+		<ul class="nav nav-pills">
+			<li class="nav-item"><a class="nav-link text-light" th:href=@{/booking}
+				alt="homepage">Home</a></li>
+		</ul>
+	</div>
+	<div class="container col-md-6 col-md-offset-3 mt-3 p-3 text-center">
+    <div class="text-center">
+    <h1>Ticket</h1>
+    </div>
+	<h6>Ticket Id: <span th:text="${book.id}"></span></h6>
+	<h6>Bus Name:<span th:text="${book.bus.busName}"></span></h6>
+	<h6>Passenger Name: <span th:text="${book.passenger.name}"></span></h6>
+	<h6>Number of seats: <span th:text="${book.seatCount}"></span></h6>
+	<h6>Fees: Rs.<span th:text="${book.fare}"></span></h6>
+	<h6>Travel Date: <span th:text="${book.bus.date}"></span></h6>
+	<br>
+	<h6 class="text-success">Have a wonderful Journey😇!!</h6>
+	</div>
+	
+
+<script
+
+		src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"
+		integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM"
+		crossorigin="anonymous"></script>
+</body>
+</html>
